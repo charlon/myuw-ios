@@ -12,11 +12,12 @@ import WebKit
 
 class ViewController: WebViewController {
     
+    let url = URL(string: "https://my-test.s.uw.edu/")!
+    
     override func viewDidLoad() {
 
         // Do any additional setup after loading the view.
-         
-        let url = URL(string: "https://my-test.s.uw.edu/")!
+    
         webView.load(URLRequest(url: url))
         
         // add a right button in navbar programatically
@@ -34,6 +35,20 @@ class ViewController: WebViewController {
         print("webview didFinish")
         //webView.evaluateJavaScript("alert('hello');")
                 
+    }
+    
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+       //load cookie of current domain
+        webView.loadDiskCookies(for: url.host!) {
+            decisionHandler(.allow)
+        }
+    }
+
+    public func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
+       //write cookie for current domain
+        webView.writeDiskCookies(for: url.host!) {
+            decisionHandler(.allow)
+        }
     }
     
     @objc func showProfile() {
